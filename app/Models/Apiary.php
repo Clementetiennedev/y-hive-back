@@ -20,6 +20,11 @@ class Apiary extends Model
         'deleted_at',
     ];
 
+    /**
+     * hives
+     *
+     * @return HasMany<Hive, $this>
+     */
     public function hives(): HasMany
     {
         return $this->hasMany(Hive::class);

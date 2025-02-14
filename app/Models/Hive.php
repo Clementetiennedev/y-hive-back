@@ -20,6 +20,11 @@ class Hive extends Model
         'deleted_at',
     ];
 
+    /**
+     * apiary
+     *
+     * @return BelongsTo<Apiary, $this>
+     */
     public function apiary(): BelongsTo
     {
         return $this->belongsTo(Apiary::class);

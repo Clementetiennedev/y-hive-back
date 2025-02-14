@@ -20,6 +20,11 @@ class Sensor extends Model
         'deleted_at',
     ];
 
+    /**
+     * model
+     *
+     * @return MorphTo<Model, $this>
+     */
     public function model(): MorphTo
     {
         return $this->morphTo();
