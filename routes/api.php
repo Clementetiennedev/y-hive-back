@@ -1,7 +1,7 @@
 <?php
 
+use App\Http\Controllers\ApiaryController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,15 +15,15 @@ Route::post('login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('user', [AuthController::class, 'me']);
     Route::post('logout', [AuthController::class, 'logout']);
-});
 
-// Route::prefix('user')
-//         ->controller(UserController::class)
-//         ->name('user.')
-//         ->group(function () {
-//             Route::post('register', 'register')->name('register');
-//             Route::post('edit', 'update')->name('update');
-//             Route::get('me', 'show')->name('show');
-//             Route::get('logout', 'logout')->name('logout');
-//             Route::post('login', 'login')->name('login');
-//         });
+    Route::prefix('apiary')
+        ->controller(ApiaryController::class)
+        ->name('apiary.')
+        ->group(function () {
+            Route::get('index', 'index')->name('index');
+            Route::get('{apiary}', 'show')->name('show');
+            Route::post('store', 'store')->name('store');
+            Route::post('{apiary}', 'update')->name('update');
+            Route::delete('{apiary}', 'destroy')->name('destroy');
+        });
+});
