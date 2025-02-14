@@ -3,6 +3,7 @@
 use App\Http\Controllers\ApiaryController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HiveController;
+use App\Http\Controllers\InterventionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -37,5 +38,16 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('{hive}', 'show')->name('show');
             Route::post('{hive}', 'update')->name('update');
             Route::delete('{hive}', 'destroy')->name('destroy');
+        });
+
+    Route::prefix('intervention')
+        ->controller(InterventionController::class)
+        ->name('intervention.')
+        ->group(function () {
+            Route::get('index', 'index')->name('index');
+            Route::get('{intervention}', 'show')->name('show');
+            Route::post('store', 'store')->name('store');
+            Route::post('{intervention}', 'update')->name('update');
+            Route::delete('{intervention}', 'destroy')->name('destroy');
         });
 });
