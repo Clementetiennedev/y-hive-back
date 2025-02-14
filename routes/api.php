@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ApiaryController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HiveController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,7 +24,18 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('index', 'index')->name('index');
             Route::get('{apiary}', 'show')->name('show');
             Route::post('store', 'store')->name('store');
+            Route::post('{apiary}/hive', 'storeHive')->name('store.hive');
             Route::post('{apiary}', 'update')->name('update');
             Route::delete('{apiary}', 'destroy')->name('destroy');
+        });
+
+    Route::prefix('hive')
+        ->controller(HiveController::class)
+        ->name('hive.')
+        ->group(function () {
+            Route::get('index', 'index')->name('index');
+            Route::get('{hive}', 'show')->name('show');
+            Route::post('{hive}', 'update')->name('update');
+            Route::delete('{hive}', 'destroy')->name('destroy');
         });
 });

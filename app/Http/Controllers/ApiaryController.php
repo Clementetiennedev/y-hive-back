@@ -71,4 +71,28 @@ class ApiaryController extends Controller
 
         return response()->json(['message' => 'Apiary deleted successfully']);
     }
+
+    // hives
+
+    public function storeHive(Request $request, Apiary $apiary): JsonResponse
+    {
+        $validated = $request->validate([
+            /**
+             * @example super ruche
+             */
+            'name' => 'required|string|max:255',
+            /**
+             * @example ruche
+             */
+            'type' => 'required|string|max:255',
+            /**
+             * @example 2025-01-01
+             */
+            'installation_date' => 'required|date',
+        ]);
+
+        $hive = $apiary->hives()->create($validated);
+
+        return response()->json($hive, 201);
+    }
 }
