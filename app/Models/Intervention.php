@@ -16,7 +16,7 @@ class Intervention extends Model
         'type',
         'amount',
         'date',
-        'observation',
+        'observations',
         'attachment_path',
         'created_at',
         'updated_at',
