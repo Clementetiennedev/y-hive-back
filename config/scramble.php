@@ -79,7 +79,7 @@ return [
     'servers' => null,
 
     'middleware' => [
-        'web',
+        // 'web',
         // RestrictedDocsAccess::class,
     ],
 
