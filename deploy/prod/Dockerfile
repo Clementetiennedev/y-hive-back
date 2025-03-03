@@ -1,66 +1,59 @@
-# Étape 1 : Construction
-FROM php:8.3-fpm-alpine as build
+FROM php:8.3-apache
 
-# Installer les dépendances système et PHP
-RUN apk add --no-cache \
-    zip \
-    libzip-dev \
-    freetype \
-    libjpeg-turbo \
-    libpng \
-    freetype-dev \
-    libjpeg-turbo-dev \
-    libpng-dev \
-    icu-dev \
-    oniguruma-dev \
-    gettext-dev \
-    nginx \
-    bash \
-    curl \
-    nodejs \
-    npm \
-    && docker-php-ext-configure zip \
-    && docker-php-ext-install zip pdo pdo_mysql intl \
-    && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-enable gd \
-    && docker-php-ext-install bcmath exif gettext opcache \
-    && docker-php-ext-enable bcmath exif gettext opcache
-
-# Installer Composer
-COPY --from=composer:2.7.6 /usr/bin/composer /usr/bin/composer
-
+# Install additional PHP extensions
 WORKDIR /var/www/html
 
-# Copier le projet et configurer les permissions
-COPY ../.. .
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage \
-    && chmod -R 775 /var/www/html/bootstrap/cache
+RUN apt-get update \
+    && apt-get install -y \
+        git \
+        zip \
+        unzip \
+        wget \
+        gnupg2 \
+        libzip-dev \
+        cron \
+        libpq-dev \
+        libicu-dev
 
-# Installer les dépendances PHP et Node.js
-RUN composer install --no-dev --prefer-dist \
-    && npm ci --legacy-peer-deps \
+RUN pecl install redis \
+    && docker-php-ext-enable redis
+
+RUN echo "short_open_tag=Off" >> /usr/local/etc/php/php.ini
+RUN echo "upload_max_filesize=150M" >> /usr/local/etc/php/php.ini
+RUN echo "post_max_size=150M" >> /usr/local/etc/php/php.ini
+RUN echo "memory_limit=150M" >> /usr/local/etc/php/php.ini
+
+RUN docker-php-ext-configure intl && docker-php-ext-install intl
+RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql zip exif bcmath
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+COPY --chown=www-data:www-data . /var/www/html
+
+# Change ownership of the storage and cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Change permissions of the storage and cache
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+RUN a2enmod rewrite && service apache2 restart
+
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
+RUN composer install --prefer-dist
+
+ENV PUSHER_APP_ID=
+ENV PUSHER_APP_KEY=
+ENV PUSHER_APP_SECRET=
+ENV PUSHER_APP_CLUSTER=eu
+ENV VITE_PUSHER_APP_KEY=
+ENV VITE_PUSHER_APP_CLUSTER=eu
+
+# Install Node.js and npm
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install \
     && npm run build
-
-RUN chown -R www-data:www-data /var/www/html/vendor \
-    && chmod -R 775 /var/www/html/vendor
-
-# Étape 2 : Production
-FROM php:8.3-fpm-alpine
-
-# Installer nginx et les dépendances
-RUN apk add --no-cache \
-    nginx
-
-# Copier le projet construit
-COPY --from=build /var/www/html /var/www/html
-COPY ./deploy/prod/nginx.conf /etc/nginx/http.d/default.conf
-COPY ./deploy/prod/php.ini "$PHP_INI_DIR/conf.d/app.ini"
-
-WORKDIR /var/www/html
-
-# Ajouter le volume pour la persistance
-VOLUME ["/var/www/html/storage/app"]
-
-CMD ["sh", "-c", "nginx && php-fpm"]
