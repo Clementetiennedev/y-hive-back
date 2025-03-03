@@ -33,7 +33,7 @@ RUN chown -R www-data:www-data /var/www/html \
 
 # install php and node.js dependencies
 RUN composer install --no-dev --prefer-dist \
-    && npm install \
+    && RUN npm ci --legacy-peer-deps \
     && npm run build
 
 RUN chown -R www-data:www-data /var/www/html/vendor \
