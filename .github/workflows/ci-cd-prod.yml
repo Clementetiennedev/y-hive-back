@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
   build-and-deploy:
@@ -52,4 +49,4 @@ jobs:
           username: ${{ secrets.PROD_USERNAME }}
           port: 22
           password: "${{ secrets.PROD_PASSWORD }}"
-          script: "cd ~/services/yhive-back && ./deploy-app.sh"
+          script: "cd ~/services/yhive/yhive-back && ./deploy-app.sh"
