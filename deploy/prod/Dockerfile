@@ -33,6 +33,8 @@ RUN chown -R www-data:www-data /var/www/html \
 
 # install php and node.js dependencies
 RUN composer install --no-dev --prefer-dist \
+    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
     && RUN npm ci --legacy-peer-deps \
     && npm run build
 
