@@ -12,6 +12,8 @@ class ApiaryController extends Controller
     {
         $apiaries = Apiary::all();
 
+        $apiaries->load('hives');
+
         return response()->json($apiaries);
     }
 
