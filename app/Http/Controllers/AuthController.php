@@ -42,11 +42,11 @@ class AuthController extends Controller
     {
         $request->validate([
             /**
-             * @example user1@email.test
+             * @example admin@admin.fr
              */
             'email' => 'required|email',
             /**
-             * @example stringst
+             * @example password
              */
             'password' => 'required',
         ]);

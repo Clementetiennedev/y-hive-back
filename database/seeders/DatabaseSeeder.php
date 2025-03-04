@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Apiary;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Hive;
+use App\Models\Intervention;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -27,5 +28,7 @@ class DatabaseSeeder extends Seeder
         User::factory(10)->create();
         Apiary::factory(30)->create();
         Hive::factory(100)->create();
+
+        Intervention::factory(100)->create();
     }
 }
