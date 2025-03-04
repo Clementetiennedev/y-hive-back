@@ -18,8 +18,6 @@ class InterventionController extends Controller
     {
         $interventions = Intervention::all();
 
-        $interventions->load('model');
-
         return response()->json($interventions);
     }
 
@@ -65,7 +63,7 @@ class InterventionController extends Controller
      */
     public function show(Intervention $intervention): JsonResponse
     {
-        return response()->json($intervention->with('model'));
+        return response()->json($intervention);
     }
 
     /**

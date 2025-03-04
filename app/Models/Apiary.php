@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Apiary extends Model
@@ -45,15 +44,5 @@ class Apiary extends Model
     public function hives(): HasMany
     {
         return $this->hasMany(Hive::class);
-    }
-
-    /**
-     * interventions
-     *
-     * @return MorphMany<Intervention, $this>
-     */
-    public function interventions(): MorphMany
-    {
-        return $this->morphMany(Intervention::class, 'model');
     }
 }

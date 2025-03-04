@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Hive extends Model
@@ -47,15 +46,5 @@ class Hive extends Model
     public function apiary(): BelongsTo
     {
         return $this->belongsTo(Apiary::class);
-    }
-
-    /**
-     * interventions
-     *
-     * @return MorphMany<Intervention, $this>
-     */
-    public function interventions(): MorphMany
-    {
-        return $this->morphMany(Intervention::class, 'model');
     }
 }
